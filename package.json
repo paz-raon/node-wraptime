@@ -1,7 +1,7 @@
 {
   "name": "node-wraptime",
-  "version": "0.0.3",
-  "description": "measure time with logging",
+  "version": "0.0.4",
+  "description": "This package measures the execution time of a function.",
   "main": "index.js",
   "scripts": {
     "test": "NODE_PATH=. NODE_ENV=test node_modules/mocha/bin/mocha $(find ./test -name '*.spec.js') --full-trace --recursive --exit"
