@@ -1,6 +1,6 @@
 {
   "name": "node-wraptime",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "measure time with logging",
   "main": "index.js",
   "scripts": {
@@ -20,5 +20,10 @@
   "engines": {
     "node": ">= 8.0"
   },
-  "email": "raonnuri.net@gmail.com"
+  "email": "raonnuri.net@gmail.com",
+  "repository": { 
+    "type": "git", 
+    "url": "https://github.com/paz-raon/node-wraptime"
+  },
+  "license": "MIT"
 }
