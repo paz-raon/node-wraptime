@@ -1,6 +1,6 @@
 {
   "name": "node-wraptime",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "This package measures the execution time of a function.",
   "main": "index.js",
   "scripts": {
@@ -14,15 +14,15 @@
     "chai": "~4.1.2",
     "redis-mock": "~0.21.0",
     "nock": "~9.2.3",
-    "unirest": "~0.5.1",
-    "winston": "~2.4.0"
+    "superagent": "~3.8.3",
+    "pino": "~4.16.1"
   },
   "engines": {
     "node": ">= 8.0"
   },
   "email": "raonnuri.net@gmail.com",
-  "repository": { 
-    "type": "git", 
+  "repository": {
+    "type": "git",
     "url": "https://github.com/paz-raon/node-wraptime"
   },
   "license": "MIT"

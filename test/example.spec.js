@@ -3,9 +3,9 @@
 const wrapAsync = require('../').wrapAsync;
 
 const {promisify} = require('util'),
-    winston = require('winston'),
+    logger = require('pino')({ prettyPrint: true }),
     nock = require('nock'),
-    unirest = require('unirest'),
+    http = require('superagent'),
     redis = require('redis-mock'),
     client = redis.createClient();
 
@@ -45,7 +45,7 @@ describe('wraptime with logger', () => {
             nock(testUrl).get('/').query({env: process.env.NODE_ENV}).reply(200, { result: mockResponseBody });
 
             let httpClient = new HttpClient();
-            let response = await httpClient.get(testUrl, { 'Content-Type': 'application/json' }, { 'env': process.env.NODE_ENV }, 1000).catch(()=>{});
+            let response = await httpClient.get(testUrl, { 'Content-Type': 'application/json' }, { 'env': process.env.NODE_ENV }, 1000)
             expect(response.body.result).to.equal(mockResponseBody);
         });
 
@@ -55,10 +55,10 @@ describe('wraptime with logger', () => {
             nock(testUrl).get('/').query({env: process.env.NODE_ENV}).reply(200, { result: mockResponseBody });
 
             let httpClient = new HttpClient();
-            let response = await httpClient.get(testUrl, { 'Content-Type': 'application/json' }, { 'env': process.env.NODE_ENV }, 1000).catch(()=>{});
+            let response = await httpClient.get(testUrl, { 'Content-Type': 'application/json' }, { 'env': process.env.NODE_ENV }, 1000)
             expect(response.body.result).to.equal(mockResponseBody);
         });
-    });    
+    });
 });
 
 class HttpClient {
@@ -68,31 +68,23 @@ class HttpClient {
             ['get'].forEach((name) => {
                 let oldF = this[name];
                 this[name] = wrapAsync(this, oldF, ({ thisArg, func, result, args, time }) => {
-                        winston.info(`${thisArg.constructor.name}#${func.name}: ${time} elapsed.`);
-                        winston.info(`[Request ${func.name.toUpperCase()} ${result.code}] ${args[0]}`);
-                        winston.info(`[Request headers] ${JSON.stringify(args[1])}`);
-                        winston.info(`[Request queries] ${JSON.stringify(args[2])}`);
-                        winston.info(`[Request timeout] ${JSON.stringify(args[3])}`);
-                        winston.info(`[Response headers] ${JSON.stringify(result.headers)}`);
-                        winston.info(`[Response body] ${JSON.stringify(result.body)}\n`);
+                        logger.info(`${thisArg.constructor.name}#${func.name}: ${time} elapsed.`);
+                        logger.info(`[Request ${func.name.toUpperCase()} ${result.statusCode}] ${args[0]}`);
+                        logger.info(`[Request headers] ${JSON.stringify(args[1])}`);
+                        logger.info(`[Request queries] ${JSON.stringify(args[2])}`);
+                        logger.info(`[Request timeout] ${JSON.stringify(args[3])}`);
+                        logger.info(`[Response headers] ${JSON.stringify(result.headers)}`);
+                        logger.info(`[Response body] ${JSON.stringify(result.body)}\n`);
                     }
                 );
             });
         }
     }
 
-    async get(url, headers, queries, timeout) {
-        return new Promise((resolve, reject) => {
-            let restObj = unirest.get(url).timeout(timeout);
-            if (headers) restObj.header(headers);
-            if (queries) restObj.query(queries);
-            restObj.end((response) => {
-                if (response.ok) {
-                    resolve(response);
-                } else {
-                    reject(response);
-                }
-            });
-        });
+    get(url, headers, queries, timeout) {
+        let restObj = http.get(url).timeout(timeout);
+        if (headers) restObj.set(headers);
+        if (queries) restObj.query(queries);
+        return restObj;
     };
 }
