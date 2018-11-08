@@ -1,21 +1,20 @@
 'use strict';
 
-const prettyHrtime = require('pretty-hrtime');
 const NS_PER_SEC = 1e9;
 
-function resolve(thisArg, func, args, elapsed, ms_elapsed, result, callback) {
+function resolve(thisArg, func, args, ms_elapsed, result, callback) {
     if (callback == undefined) {
-        console.log(`>> resolve, ${(thisArg && thisArg.constructor) ? thisArg.constructor.name : 'null'}#${func.name}: ${prettyHrtime(elapsed)} elapsed.`);
+        console.log(`>> resolve, ${(thisArg && thisArg.constructor) ? thisArg.constructor.name : 'null'}#${func.name}: ${ms_elapsed} ms elapsed.`);
     } else {
-        callback({ thisArg: thisArg, func: func, args: args, time: prettyHrtime(elapsed), ms_time: ms_elapsed, result: result });
+        callback({ thisArg: thisArg, func: func, args: args, time: ms_elapsed, result: result });
     }
 }
 
-function reject(thisArg, func, args, elapsed, ms_elapsed, error, callback) {
+function reject(thisArg, func, args, ms_elapsed, error, callback) {
     if (callback == undefined) {
-        console.log(`>> reject, ${(thisArg && thisArg.constructor) ? thisArg.constructor.name : 'null'}#${func.name}: ${prettyHrtime(elapsed)} elapsed.`);
+        console.log(`>> reject, ${(thisArg && thisArg.constructor) ? thisArg.constructor.name : 'null'}#${func.name}: ${ms_elapsed} ms elapsed.`);
     } else {
-        callback({ thisArg: thisArg, func: func, args: args, time: prettyHrtime(elapsed), ms_time: ms_elapsed, error: error });
+        callback({ thisArg: thisArg, func: func, args: args, time: ms_elapsed, error: error });
     }
 }
 
@@ -29,7 +28,7 @@ module.exports = {
 
             resolve(thisArg, func,
                 (arguments.length === 1) ? [arguments[0]] : Array.apply(null, arguments),
-                elapsed, ms_elapsed, r,
+                ms_elapsed, r,
                 resolveCallback);
 
             return r;
@@ -56,7 +55,7 @@ module.exports = {
             if (isResolve) {
                 resolve(thisArg, func,
                     (arguments.length === 1) ? [arguments[0]] : Array.apply(null, arguments),
-                    elapsed, ms_elapsed, r,
+                    ms_elapsed, r,
                     resolveCallback);
 
                 return r;
@@ -64,7 +63,7 @@ module.exports = {
 
             reject(thisArg, func,
                 (arguments.length === 1) ? [arguments[0]] : Array.apply(null, arguments),
-                elapsed, ms_elapsed, r,
+                ms_elapsed, r,
                 rejectCallback);
 
             throw r;

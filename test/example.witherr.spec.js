@@ -44,9 +44,8 @@ class HttpClient {
         ['get', 'getErr'].forEach((name) => {
             let oldF = this[name];
             this[name] = wrapAsyncWithErr(this, oldF,
-                ({ thisArg, func, args, time, ms_time, result }) => {
-                    logger.info(`${thisArg.constructor.name}#${func.name}: ${time} elapsed.`);
-                    logger.info(`milliseconds: ${ms_time} ms elapsed.`);
+                ({ thisArg, func, args, time, result }) => {
+                    logger.info(`${thisArg.constructor.name}#${func.name}: ${time} ms elapsed.`);
                     logger.info(`[Request ${func.name.toUpperCase()} ${result.statusCode}] ${args[0]}`);
                     logger.info(`[Request headers] ${JSON.stringify(args[1])}`);
                     logger.info(`[Request queries] ${JSON.stringify(args[2])}`);
@@ -54,9 +53,8 @@ class HttpClient {
                     logger.info(`[Response headers] ${JSON.stringify(result.headers)}`);
                     logger.info(`[Response body] ${JSON.stringify(result.body)}\n`);
                 },
-                ({ thisArg, func, args, time, ms_time, error }) => {
-                    logger.info(`${thisArg.constructor.name}#${func.name}: ${time} elapsed.`);
-                    logger.info(`milliseconds: ${ms_time} ms elapsed.`);
+                ({ thisArg, func, args, time, error }) => {
+                    logger.info(`${thisArg.constructor.name}#${func.name}: ${time} ms elapsed.`);
                     logger.info(`[Request ${func.name.toUpperCase()}] ${args[0]}`);
                     logger.info(`[Request headers] ${JSON.stringify(args[1])}`);
                     logger.info(`[Request queries] ${JSON.stringify(args[2])}`);

@@ -68,7 +68,7 @@ class HttpClient {
             ['get'].forEach((name) => {
                 let oldF = this[name];
                 this[name] = wrapAsync(this, oldF, ({ thisArg, func, result, args, time }) => {
-                        logger.info(`${thisArg.constructor.name}#${func.name}: ${time} elapsed.`);
+                        logger.info(`${thisArg.constructor.name}#${func.name}: ${time} ms elapsed.`);
                         logger.info(`[Request ${func.name.toUpperCase()} ${result.statusCode}] ${args[0]}`);
                         logger.info(`[Request headers] ${JSON.stringify(args[1])}`);
                         logger.info(`[Request queries] ${JSON.stringify(args[2])}`);
